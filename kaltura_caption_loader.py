@@ -144,7 +144,7 @@ class KalturaCaptionLoader(BaseLoader):
         return captionDocuments
 
 
-def main():
+def main() -> List[Document]:
     load_dotenv()
 
     captionLoader = KalturaCaptionLoader(
@@ -164,8 +164,8 @@ def main():
 
     documents = captionLoader.load()
 
-    print(documents)
+    return documents
 
 
 if '__main__' == __name__:
-    main()
+    print(main())
