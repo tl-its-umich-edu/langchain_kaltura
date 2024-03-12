@@ -168,4 +168,7 @@ def main() -> List[Document]:
 
 
 if '__main__' == __name__:
-    print(main())
+    # E.g., execute this code with `python -i -m kaltura_caption_loader`,
+    # then inspect the contents of `documents` at the Python prompt
+    documents = main()
+    print(documents)
