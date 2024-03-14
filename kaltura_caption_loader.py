@@ -1,4 +1,5 @@
 import hashlib
+import json
 import os
 from typing import List, Self
 
@@ -19,16 +20,21 @@ class KalturaCaptionLoader(BaseLoader):
     Load chunked caption assets from Kaltura for a single media entry ID or
     for every media contained in a specific category.
     """
+    EXPIRYSECONDSDEFAULT = 86400  # 24 hours
+    CHUNKMINUTESDEFAULT = 2
+    FILTERCATEGORY = 'CATEGORY'
+    FILTERMEDIAID = 'MEDIAID'
+    FILTERTYPES = (FILTERCATEGORY, FILTERMEDIAID)
 
     def __init__(self,
-                 partnerId: str = None,
-                 appTokenId: str = None,
-                 appTokenValue: str = None,
-                 expirySeconds: int = 86400,
-                 mediaEntryId: str = None,
-                 categoryText: str = None,
-                 chunkMinutes: int = 2,
-                 urlTemplate: str = None):
+                 partnerId: str,
+                 appTokenId: str,
+                 appTokenValue: str,
+                 filterType: str,
+                 filterValue: str,
+                 urlTemplate: str,
+                 expirySeconds: int = EXPIRYSECONDSDEFAULT,
+                 chunkMinutes: int = CHUNKMINUTESDEFAULT):
         """
         If a `sessionKey` is given, a rare occurrence, it overrides all
         other parameters.
@@ -51,33 +57,41 @@ class KalturaCaptionLoader(BaseLoader):
             "{startSeconds}".
         """
 
-        if (mediaEntryId, categoryText).count(None) != 1:
-            raise ValueError('mediaEntryId or categoryText must be specified, '
-                             'but not both.')
-        if urlTemplate is None:
+        if not all((partnerId, appTokenId, appTokenValue)):
+            raise ValueError('partner and appToken parameters must be '
+                             'specified')
+
+        filterType = str(filterType).upper()
+        if filterType not in self.FILTERTYPES or not filterValue:
+            raise ValueError(f'filterType must be one of {self.FILTERTYPES} '
+                             'and filterValue must be specified')
+
+        if not urlTemplate:
             raise ValueError('urlFormat must be specified, with fields for'
                              '"{mediaId}" and "{startSeconds}".')
 
         client = KalturaClient(KalturaConfiguration())
 
-        widgetSession = client.session.startWidgetSession(f'_{partnerId}');
+        widgetSession = client.session.startWidgetSession(f'_{partnerId}')
 
-        tokenHash = hashlib.sha512(
+        appTokenHash = hashlib.sha512(
             (widgetSession.ks + appTokenValue).encode('ascii')).hexdigest()
 
         client.setKs(widgetSession.ks)
 
-        appSession = client.appToken.startSession(appTokenId, tokenHash,
-                                                  type=KalturaSessionType.USER)
+        appSession = client.appToken.startSession(
+            appTokenId, appTokenHash, type=KalturaSessionType.USER,
+            expiry=expirySeconds)
 
         client.setKs(appSession.ks)
         self.client = client
 
         self.mediaFilter: KalturaMediaEntryFilter | None = None
-        if mediaEntryId is not None:
-            self.setMediaEntry(mediaEntryId)
+        if filterType == self.FILTERCATEGORY:
+            self.setMediaCategory(filterValue)
         else:
-            self.setMediaCategory(categoryText)
+            self.setMediaEntry(filterValue)
+
         self.chunkMinutes = int(chunkMinutes)
         self.urlTemplate = urlTemplate
 
@@ -154,15 +168,20 @@ class KalturaCaptionLoader(BaseLoader):
 def main() -> List[Document]:
     load_dotenv()
 
+    mediaFilter = json.loads(os.getenv('FILTERJSON', '{}'))
+
     captionLoader = KalturaCaptionLoader(
-        partnerId=os.getenv('PARTNERID'),
-        appTokenId=os.getenv('APPTOKENID'),
-        appTokenValue=os.getenv('APPTOKENVALUE'),
-        expirySeconds=int(os.getenv('EXPIRYSECONDS', '86400')),  # 24 hours
-        mediaEntryId=os.getenv('MEDIAENTRYID'),
-        categoryText=os.getenv('CATEGORYTEXT'),
-        chunkMinutes=int(os.getenv('CHUNKMINUTES', '2')),
-        urlTemplate=os.getenv('URLTEMPLATE'))
+        os.getenv('PARTNERID'),
+        os.getenv('APPTOKENID'),
+        os.getenv('APPTOKENVALUE'),
+        mediaFilter.get('type'),
+        mediaFilter.get('value'),
+        os.getenv('URLTEMPLATE'),
+        expirySeconds=int(os.getenv(
+            'EXPIRYSECONDS', KalturaCaptionLoader.EXPIRYSECONDSDEFAULT)),
+        chunkMinutes=int(os.getenv(
+            'CHUNKMINUTES', KalturaCaptionLoader.CHUNKMINUTESDEFAULT)),
+    )
 
     documents = captionLoader.load()
 
@@ -173,4 +192,4 @@ if '__main__' == __name__:
     # E.g., execute this code with `python -i -m kaltura_caption_loader`,
     # then inspect the contents of `documents` at the Python prompt
     documents = main()
-    print(documents)
+    print(json.dumps([d.to_json() for d in documents], indent=2))
