@@ -114,12 +114,14 @@ class KalturaCaptionLoader(BaseLoader):
 
             # Only the SRT format supported at this time
             if captionAsset.format.value == KalturaCaptionType.SRT:
+                # Kaltura's `caption.captionAsset.serve()` seemed like it
+                # would give us the caption contents, but it also only
+                # returned a URL to the captions.
                 captionUrl = self.client.caption.captionAsset.getUrl(
                     captionAsset.id)
+                captionSource = self.httpClient.get(captionUrl).text
+                captions = pysrt.from_string(captionSource)
 
-                response = self.httpClient.get(captionUrl)
-
-                captions = pysrt.from_string(response.text)
                 index = 0
                 while (captionsSection := captions.slice(
                         starts_after={
