@@ -1,8 +1,8 @@
 import os
 from typing import List, Self
 
-import httpx
 import pysrt
+import requests
 from KalturaClient import KalturaClient, KalturaConfiguration
 from KalturaClient.Plugins.Caption import (
     KalturaCaptionAssetFilter, KalturaCaptionType, KalturaCaptionAsset)
@@ -78,8 +78,6 @@ class KalturaCaptionLoader(BaseLoader):
         self.chunkMinutes = int(chunkMinutes)
         self.urlTemplate = urlTemplate
 
-        self.httpClient = httpx.Client()
-
     def setMediaEntry(self, mediaEntryId: str) -> Self:
         self.mediaFilter = KalturaMediaEntryFilter()
         self.mediaFilter.idEqual = mediaEntryId
@@ -111,6 +109,10 @@ class KalturaCaptionLoader(BaseLoader):
         captionAssets = self.client.caption.captionAsset.list(captionFilter)
         captionAsset: KalturaCaptionAsset
         for captionAsset in captionAssets.objects:
+            # XXX: Kaltura caption assets have an `isDefault` property.
+            #   However, media doesn't always have a default caption asset.
+            #   It seems wise to load all captions, even if they're all of
+            #   the same language or low accuracy ratings.
 
             # Only the SRT format supported at this time
             if captionAsset.format.value == KalturaCaptionType.SRT:
@@ -119,7 +121,7 @@ class KalturaCaptionLoader(BaseLoader):
                 # returned a URL to the captions.
                 captionUrl = self.client.caption.captionAsset.getUrl(
                     captionAsset.id)
-                captionSource = self.httpClient.get(captionUrl).text
+                captionSource = requests.get(captionUrl).text
                 captions = pysrt.from_string(captionSource)
 
                 index = 0
