@@ -1,3 +1,4 @@
+import hashlib
 import os
 from typing import List, Self
 
@@ -15,18 +16,15 @@ from langchain_core.documents import Document
 
 class KalturaCaptionLoader(BaseLoader):
     """
-    Given a Kaltura media entry ID, load its chunked caption assets.
-    Given Kaltura category text, load caption assets of all matching media.
+    Load chunked caption assets from Kaltura for a single media entry ID or
+    for every media contained in a specific category.
     """
 
     def __init__(self,
-                 adminSecret: str = None,
-                 userId: str = None,
-                 sessionType: KalturaSessionType = KalturaSessionType.ADMIN,
                  partnerId: str = None,
+                 appTokenId: str = None,
+                 appTokenValue: str = None,
                  expirySeconds: int = 86400,
-                 privileges: str = '',
-                 sessionKey: str = None,
                  mediaEntryId: str = None,
                  categoryText: str = None,
                  chunkMinutes: int = 2,
@@ -60,16 +58,21 @@ class KalturaCaptionLoader(BaseLoader):
             raise ValueError('urlFormat must be specified, with fields for'
                              '"{mediaId}" and "{startSeconds}".')
 
-        self.client = KalturaClient(KalturaConfiguration())
-        if not sessionKey:
-            sessionKey = self.client.generateSession(
-                adminSecret,
-                userId,
-                sessionType,
-                partnerId,
-                expirySeconds,
-                privileges)
-        self.client.setKs(sessionKey)
+        client = KalturaClient(KalturaConfiguration())
+
+        widgetSession = client.session.startWidgetSession(f'_{partnerId}');
+
+        tokenHash = hashlib.sha512(
+            (widgetSession.ks + appTokenValue).encode('ascii')).hexdigest()
+
+        client.setKs(widgetSession.ks)
+
+        appSession = client.appToken.startSession(appTokenId, tokenHash,
+                                                  type=KalturaSessionType.USER)
+
+        client.setKs(appSession.ks)
+        self.client = client
+
         self.mediaFilter: KalturaMediaEntryFilter | None = None
         if mediaEntryId is not None:
             self.setMediaEntry(mediaEntryId)
@@ -117,7 +120,7 @@ class KalturaCaptionLoader(BaseLoader):
             # Only the SRT format supported at this time
             if captionAsset.format.value == KalturaCaptionType.SRT:
                 # Kaltura's `caption.captionAsset.serve()` seemed like it
-                # would give us the caption contents, but it also only
+                # would give caption contents, but it also only
                 # returned a URL to the captions.
                 captionUrl = self.client.caption.captionAsset.getUrl(
                     captionAsset.id)
@@ -152,15 +155,10 @@ def main() -> List[Document]:
     load_dotenv()
 
     captionLoader = KalturaCaptionLoader(
-        adminSecret=os.getenv('ADMINSECRET'),
-        userId=os.getenv('USERID'),
-        sessionType=(KalturaSessionType.ADMIN
-                     if os.getenv('SESSIONTYPE', '').upper() == 'ADMIN'
-                     else KalturaSessionType.USER),
         partnerId=os.getenv('PARTNERID'),
+        appTokenId=os.getenv('APPTOKENID'),
+        appTokenValue=os.getenv('APPTOKENVALUE'),
         expirySeconds=int(os.getenv('EXPIRYSECONDS', '86400')),  # 24 hours
-        privileges=os.getenv('PRIVILEGES'),
-        sessionKey=os.getenv('SESSIONKEY'),
         mediaEntryId=os.getenv('MEDIAENTRYID'),
         categoryText=os.getenv('CATEGORYTEXT'),
         chunkMinutes=int(os.getenv('CHUNKMINUTES', '2')),
