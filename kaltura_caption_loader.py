@@ -22,6 +22,7 @@ class KalturaCaptionLoader(BaseLoader):
     """
     EXPIRYSECONDSDEFAULT = 86400  # 24 hours
     CHUNKMINUTESDEFAULT = 2
+    KALTURAURLDEFAULT = 'https://www.kaltura.com/'
     FILTERCATEGORY = 'CATEGORY'
     FILTERMEDIAID = 'MEDIAID'
     FILTERTYPES = (FILTERCATEGORY, FILTERMEDIAID)
@@ -34,7 +35,8 @@ class KalturaCaptionLoader(BaseLoader):
                  filterValue: str,
                  urlTemplate: str,
                  expirySeconds: int = EXPIRYSECONDSDEFAULT,
-                 chunkMinutes: int = CHUNKMINUTESDEFAULT):
+                 chunkMinutes: int = CHUNKMINUTESDEFAULT,
+                 kalturaUrl: str = KALTURAURLDEFAULT):
         """
         If a `sessionKey` is given, a rare occurrence, it overrides all
         other parameters.
@@ -70,7 +72,9 @@ class KalturaCaptionLoader(BaseLoader):
             raise ValueError('urlFormat must be specified, with fields for'
                              '"{mediaId}" and "{startSeconds}".')
 
-        client = KalturaClient(KalturaConfiguration())
+        config = KalturaConfiguration()
+        config.serviceUrl = kalturaUrl
+        client = KalturaClient(config)
 
         widgetSession = client.session.startWidgetSession(f'_{partnerId}')
 
