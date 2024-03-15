@@ -1,0 +1,6 @@
+KalturaApiClient==19.3.0
+langchain==0.1.12
+lxml==5.1.0
+pysrt==1.1.2
+python-dotenv==1.0.1
+requests==2.31.0
