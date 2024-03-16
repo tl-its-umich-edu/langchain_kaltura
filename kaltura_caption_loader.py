@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+from enum import Enum, auto
 from typing import List, Self
 
 import pysrt
@@ -22,21 +23,28 @@ class KalturaCaptionLoader(BaseLoader):
     """
     EXPIRYSECONDSDEFAULT = 86400  # 24 hours
     CHUNKMINUTESDEFAULT = 2
-    KALTURAURLDEFAULT = 'https://www.kaltura.com/'
-    FILTERCATEGORY = 'CATEGORY'
-    FILTERMEDIAID = 'MEDIAID'
-    FILTERTYPES = (FILTERCATEGORY, FILTERMEDIAID)
+
+    class FilterType(Enum):
+        CATEGORY = auto()
+        MEDIAID = auto()
+
+        @classmethod
+        def _missing_(cls, key):
+            value = cls.__members__.get(key.upper())
+            if value is None:
+                raise ValueError(f'Invalid key "{key}" for {cls.__name__}')
+            return cls(value)
 
     def __init__(self,
                  partnerId: str,
                  appTokenId: str,
                  appTokenValue: str,
-                 filterType: str,
+                 filterType: FilterType,
                  filterValue: str,
                  urlTemplate: str,
                  expirySeconds: int = EXPIRYSECONDSDEFAULT,
                  chunkMinutes: int = CHUNKMINUTESDEFAULT,
-                 kalturaUrl: str = KALTURAURLDEFAULT):
+                 kalturaApiBaseUrl: str = None):
         """
         If a `sessionKey` is given, a rare occurrence, it overrides all
         other parameters.
@@ -60,20 +68,23 @@ class KalturaCaptionLoader(BaseLoader):
         """
 
         if not all((partnerId, appTokenId, appTokenValue)):
-            raise ValueError('partner and appToken parameters must be '
+            raise ValueError('partnerId and appToken* parameters must be '
                              'specified')
 
-        filterType = str(filterType).upper()
-        if filterType not in self.FILTERTYPES or not filterValue:
-            raise ValueError(f'filterType must be one of {self.FILTERTYPES} '
-                             'and filterValue must be specified')
+        if type(filterType) is not self.FilterType:
+            raise TypeError(f'filterType "{filterType}" ({type(filterType)}) '
+                            f'is not a {self.FilterType.__name__}')
+
+        if not filterValue:
+            raise ValueError('filterValue must be specified')
 
         if not urlTemplate:
             raise ValueError('urlFormat must be specified, with fields for'
                              '"{mediaId}" and "{startSeconds}".')
 
         config = KalturaConfiguration()
-        config.serviceUrl = kalturaUrl
+        if kalturaApiBaseUrl is not None:
+            config.serviceUrl = kalturaApiBaseUrl
         client = KalturaClient(config)
 
         widgetSession = client.session.startWidgetSession(f'_{partnerId}')
@@ -91,7 +102,7 @@ class KalturaCaptionLoader(BaseLoader):
         self.client = client
 
         self.mediaFilter: KalturaMediaEntryFilter | None = None
-        if filterType == self.FILTERCATEGORY:
+        if filterType == self.FilterType.CATEGORY:
             self.setMediaCategory(filterValue)
         else:
             self.setMediaEntry(filterValue)
@@ -178,7 +189,7 @@ def main() -> List[Document]:
         os.getenv('PARTNERID'),
         os.getenv('APPTOKENID'),
         os.getenv('APPTOKENVALUE'),
-        mediaFilter.get('type'),
+        KalturaCaptionLoader.FilterType(mediaFilter.get('type')),
         mediaFilter.get('value'),
         os.getenv('URLTEMPLATE'),
         expirySeconds=int(os.getenv(
