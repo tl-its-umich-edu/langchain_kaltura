@@ -73,7 +73,7 @@ class KalturaCaptionLoader(BaseLoader):
 
         if type(filterType) is not self.FilterType:
             raise TypeError(f'filterType "{filterType}" ({type(filterType)}) '
-                            f'is not a {self.FilterType.__name__}')
+                            f'is not a {repr(self.FilterType)}')
 
         if not filterValue:
             raise ValueError('filterValue must be specified')
