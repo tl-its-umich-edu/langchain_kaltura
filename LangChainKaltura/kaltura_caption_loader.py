@@ -20,11 +20,27 @@ class KalturaCaptionLoader(BaseLoader):
     """
     Load chunked caption assets from Kaltura for a single media entry ID or
     for every media contained in a specific category.
+
+    Following the pattern of other LangChain loaders, all configuration of
+    KalturaCaptionLoader is done via parameters to the constructor.  After an
+    instance of the class has been created, call its `load()` method to begin
+    working and return results.
     """
     EXPIRYSECONDSDEFAULT = 86400  # 24 hours
     CHUNKMINUTESDEFAULT = 2
 
     class FilterType(Enum):
+        """
+        Types of supported filter strings.
+
+        - `MEDIAID` indicates a Kaltura media entry ID.
+        - `CATEGORY` indicates a Kaltura category text "full path", e.g.,
+          `root>site>courses>course_category_name`.
+
+        For convenience, the constructor parameter is case-insensitive.
+        E.g., `FilterType('CATEGORY')` and `FilterType('category')` are
+        equivalent.
+        """
         CATEGORY = auto()
         MEDIAID = auto()
 
@@ -46,25 +62,31 @@ class KalturaCaptionLoader(BaseLoader):
                  chunkMinutes: int = CHUNKMINUTESDEFAULT,
                  kalturaApiBaseUrl: str = None):
         """
-        If a `sessionKey` is given, a rare occurrence, it overrides all
-        other parameters.
-
-        Exactly **ONE** of `mediaEntryId` or `categoryText` must be specified.
-
-        Most other parameters are as documented for
-        `KalturaClient.Client.KalturaClient.generateSession()`, except…
-
-        :param mediaEntryId: ID string of a `KalturaMediaEntry` object.
-        :param categoryText: Category string that may be applied to one or
-            more `KalturaMediaEntry` objects.  Note that this must be the
-            **FULL** "path" to the category, not only the desired category.
-            E.g., 'Top_Level_Name>Sublevel_A>Sublevel_B>Desired_Category'.
-        :param chunkMinutes: An integer number of minutes specifying the
-            size of each caption chunk.
-        :param urlTemplate: A template string to be used with `str.format()`
-            to make a URL for the `source` metadata of the langchain `Document`
-            objects.  Fields used in the template must be ONLY "{mediaId}" and
-            "{startSeconds}".
+        :param partnerId: Partner ID in Kaltura (i.e., the KAF ID).
+        :param appTokenId: ID of the app token configured in Kaltura.
+        :param appTokenValue: Value of the app token referred to by ID above.
+            This value is considered to be a sensitive secret, akin to a
+            password.
+        :param filterType: One of the `FilterType` values, `FilterType.MEDIAID`
+            or `FilterType.CATEGORY`, which determines how `filterValue`
+            will be used.
+        :param filterValue: String containing the media ID or full category
+            name of the media in Kaltura to be processed.
+            Depends on `filterType`.
+        :param urlTemplate: String template to construct URLs for the `source`
+            metadata property of LangChain `Document` objects.  It must contain
+            the fields `mediaId` and `startSeconds` ONLY to be filled in by
+            `str.format()`.  E.g.,
+            `https://example.edu/v/{mediaId}?t={startSeconds}`.
+        :param expirySeconds: *Optional* Integer number of seconds for length
+            of the Kaltura auth. session.  *Defaults to value of
+            `KalturaCaptionLoader.EXPIRYSECONDSDEFAULT`.*
+        :param chunkMinutes: *Optional* Integer number of minutes of the length
+            of each caption chunk loaded from Kaltura.  *Defaults to value of
+            `KalturaCaptionLoader.CHUNKMINUTESDEFAULT`.*
+        :param kalturaApiBaseUrl: *Optional* String base URL of the Kaltura API
+            service.  *Defaults to value of
+            `KalturaConfiguration().serviceUrl`.*
         """
 
         if not all((partnerId, appTokenId, appTokenValue)):
