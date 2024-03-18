@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml>
+    <result>
+        <objectType>KalturaStartWidgetSessionResponse</objectType>
+        <partnerId>__partnerId__</partnerId>
+        <ks>startWidgetSessionKs</ks>
+        <userId>0</userId>
+    </result>
+</xml>

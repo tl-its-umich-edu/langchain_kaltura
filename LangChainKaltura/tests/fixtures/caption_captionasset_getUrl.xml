@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml>
+    <result>http://{host}:{port}/captionAsset/contents</result>
+</xml>

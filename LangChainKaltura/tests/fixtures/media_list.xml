@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <result>
+        <objectType>KalturaMediaListResponse</objectType>
+        <objects>
+            <item>
+                <objectType>KalturaMediaEntry</objectType>
+                <mediaType>1</mediaType>
+                <conversionQuality>7193231</conversionQuality>
+                <sourceType>1</sourceType>
+                <sourceVersion />
+                <searchProviderType />
+                <searchProviderId />
+                <creditUserName />
+                <creditUrl />
+                <mediaDate />
+                <dataUrl>https://cdnapisec.kaltura.com/p/__partnerId__/sp/__partnerId__00/playManifest/entryId/1_mediaId/format/url/protocol/https</dataUrl>
+                <flavorParamsIds>0,487041,487051,487061,487071,487081,487091</flavorParamsIds>
+                <isTrimDisabled />
+                <streams />
+                <plays>20</plays>
+                <views>45</views>
+                <lastPlayedAt>1710266400</lastPlayedAt>
+                <width>1920</width>
+                <height>1080</height>
+                <duration>262</duration>
+                <msDuration>262316</msDuration>
+                <durationType />
+                <id>1_mediaId</id>
+                <name>Pinball Wizard - Elton John &amp; The Who - "Tommy" (1975)</name>
+                <description>A psychosomatically blind, deaf, and mute boy becomes a master pinball player and, subsequently, the figurehead of a cult.&lt;br&gt;</description>
+                <partnerId>__partnerId__</partnerId>
+                <userId>lsloan</userId>
+                <creatorId>lsloan</creatorId>
+                <tags>tommy, elton john, the who, music video, movie clip, pinball, wizard, music, t&amp;l, tl weekly standup</tags>
+                <adminTags />
+                <categories />
+                <categoriesIds />
+                <status>2</status>
+                <moderationStatus>6</moderationStatus>
+                <moderationCount>0</moderationCount>
+                <type>1</type>
+                <createdAt>1707504855</createdAt>
+                <updatedAt>1709752820</updatedAt>
+                <rank>0</rank>
+                <totalRank>0</totalRank>
+                <votes>0</votes>
+                <groupId />
+                <partnerData />
+                <downloadUrl>https://cdnapisec.kaltura.com/p/__partnerId__/sp/__partnerId__00/playManifest/entryId/1_mediaId/format/download/protocol/https/flavorParamIds/0</downloadUrl>
+                <searchText>_PAR_ONLY_ ___partnerId___ _MEDIA_TYPE_1|  Pinball Wizard - Elton John &amp; The Who - Tommy (1975) tommy, elton john, the who, music video, movie clip, pinball, wizard, music, t&amp;l, tl weekly standup A psychosomatically blind, deaf, and mute boy becomes a master pinball player and, subsequently, the figurehead of a cult.&lt;br&gt;</searchText>
+                <licenseType>-1</licenseType>
+                <version>0</version>
+                <thumbnailUrl>https://cdnsecakmi.kaltura.com/p/__partnerId__/sp/__partnerId__00/thumbnail/entry_id/1_mediaId/version/100031</thumbnailUrl>
+                <accessControlId>939562</accessControlId>
+                <startDate />
+                <endDate />
+                <referenceId />
+                <replacingEntryId />
+                <replacedEntryId />
+                <replacementStatus>0</replacementStatus>
+                <partnerSortValue>0</partnerSortValue>
+                <conversionProfileId>7193231</conversionProfileId>
+                <redirectEntryId />
+                <rootEntryId>1_mediaId</rootEntryId>
+                <parentEntryId />
+                <operationAttributes />
+                <entitledUsersEdit />
+                <entitledUsersPublish />
+                <entitledUsersView />
+                <capabilities />
+                <templateEntryId />
+                <displayInSearch>1</displayInSearch>
+                <application>1</application>
+                <applicationVersion>5.120.6</applicationVersion>
+                <blockAutoTranscript>0</blockAutoTranscript>
+                <defaultLanguage />
+                <responseLanguage />
+            </item>
+        </objects>
+        <totalCount>1</totalCount>
+    </result>
+</xml>

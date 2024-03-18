@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <result>
+        <objectType>KalturaCaptionAssetListResponse</objectType>
+        <objects>
+            <item>
+                <objectType>KalturaCaptionAsset</objectType>
+                <captionParamsId>0</captionParamsId>
+                <language>English</language>
+                <languageCode>en</languageCode>
+                <isDefault>1</isDefault>
+                <label>English</label>
+                <format>1</format>
+                <source />
+                <status>2</status>
+                <parentId />
+                <accuracy>99</accuracy>
+                <displayOnPlayer>1</displayOnPlayer>
+                <associatedTranscriptIds />
+                <id>1_captionId</id>
+                <entryId>1_mediaId</entryId>
+                <partnerId>__partnerId__</partnerId>
+                <version>1</version>
+                <size>3258</size>
+                <tags />
+                <fileExt>srt</fileExt>
+                <createdAt>1707505156</createdAt>
+                <updatedAt>1707505166</updatedAt>
+                <deletedAt />
+                <description />
+                <partnerData />
+                <partnerDescription />
+                <actualSourceAssetParamsIds />
+                <sizeInBytes>3258</sizeInBytes>
+            </item>
+        </objects>
+        <totalCount>1</totalCount>
+    </result>
+</xml>
