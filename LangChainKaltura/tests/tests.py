@@ -1,5 +1,6 @@
 import json
 import os.path
+from http import HTTPMethod
 
 import flask
 from http_server_mock import HttpServerMock
@@ -15,7 +16,7 @@ fixturesPathname = os.path.join(os.path.dirname(__file__), 'fixtures', '')
 
 
 @app.route('/api_v3/service/<service>/action/<action>',
-           methods=['POST'])
+           methods=[HTTPMethod.POST])
 def serviceActionHandler(service, action):
     (host, port) = flask.request.server
     return open(f'{fixturesPathname}{service}_{action}.xml').read().format(
@@ -24,7 +25,7 @@ def serviceActionHandler(service, action):
 
 # contrived route, specified in `caption_captionasset_getUrl.xml`
 @app.route('/captionAsset/contents',
-           methods=['GET'])
+           methods=[HTTPMethod.GET])
 def captionAssetContents():
     return open(f'{fixturesPathname}pinball_wizard.srt').read()
 
