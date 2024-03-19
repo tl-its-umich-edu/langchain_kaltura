@@ -1,6 +1,4 @@
 import hashlib
-import json
-import os
 from enum import Enum, auto
 from typing import List, Self
 
@@ -11,7 +9,6 @@ from KalturaClient.Plugins.Caption import (
     KalturaCaptionAssetFilter, KalturaCaptionType, KalturaCaptionAsset)
 from KalturaClient.Plugins.Core import (
     KalturaMediaEntryFilter, KalturaSessionType, KalturaMediaEntry)
-from dotenv import load_dotenv
 from langchain_community.document_loaders.base import BaseLoader
 from langchain_core.documents import Document
 
@@ -200,34 +197,3 @@ class KalturaCaptionLoader(BaseLoader):
                     index += 1
 
         return captionDocuments
-
-
-def main() -> List[Document]:
-    load_dotenv()
-
-    mediaFilter = json.loads(os.getenv('FILTERJSON', '{}'))
-
-    captionLoader = KalturaCaptionLoader(
-        os.getenv('PARTNERID'),
-        os.getenv('APPTOKENID'),
-        os.getenv('APPTOKENVALUE'),
-        KalturaCaptionLoader.FilterType(mediaFilter.get('type')),
-        mediaFilter.get('value'),
-        os.getenv('URLTEMPLATE'),
-        expirySeconds=int(os.getenv(
-            'EXPIRYSECONDS', KalturaCaptionLoader.EXPIRYSECONDSDEFAULT)),
-        chunkMinutes=int(os.getenv(
-            'CHUNKMINUTES', KalturaCaptionLoader.CHUNKMINUTESDEFAULT)),
-    )
-
-    documents = captionLoader.load()
-
-    return documents
-
-
-if '__main__' == __name__:
-    # E.g., execute this code with `python -i -m kaltura_caption_loader`,
-    # then inspect the contents of `documents` at the Python prompt
-    documents = main()
-    print(json.dumps([d.to_json()['kwargs'] for d in documents],
-                     indent=2, sort_keys=True))
