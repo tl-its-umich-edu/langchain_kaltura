@@ -2,7 +2,7 @@ import json
 import os
 from typing import List
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # pip install python-dotenv
 from langchain_core.documents import Document
 
 from LangChainKaltura import KalturaCaptionLoader
