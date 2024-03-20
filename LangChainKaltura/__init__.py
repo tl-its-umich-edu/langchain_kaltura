@@ -1,1 +1,1 @@
-from .kaltura_caption_loader import KalturaCaptionLoader
+from .KalturaCaptionLoader import KalturaCaptionLoader
