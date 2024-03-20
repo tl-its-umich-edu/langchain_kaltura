@@ -2,20 +2,15 @@
 
 A LangChain vector store loader for captions of videos hosted in Kaltura (UMich's MiVideo service).
 
-## Requirements
+## Installation
 
-(See issue umich-its-ai/langchain_kaltura#1 for the most current list of requirements and their completion status.)
+```shell
+pip install LangChainKaltura
+```
 
-* It must return langchain `Document` class(es).
-* This should be a standalone, headless application, which could be invoked as part of a more complex process.
-* When processing captions from media, it should be split into two-minute chunks.
-* Caption chunks' metadata will include source URLs to the media, which include timestamps to the specific two-minute window of the video.
-* It will only work with media that include captions, which were written or approved by owners.
-* When working with Kaltura, an app token **_MUST_** be required.
+## Usage
 
-## Example
-
-Basic usage of this module is to import it, instantiate it with all the necessary parameters, and call its `run()` method.
+Import it, instantiate it with all the required parameters, and call its `run()` method…
 
 ```python
 import os
@@ -36,12 +31,22 @@ documents = captionLoader.load()
 print(documents)
 ```
 
-See the file `example.py` for a more detailed example, which will read parameters from `.env` (based on `.env.example`) and print the results as JSON.
+See `example.py` for a detailed example, which reads parameters from `.env` (based on `.env.example`) and prints the results as JSON.
 
-## Testing Suite
+## Features
+
+(See issue umich-its-ai/langchain_kaltura#1 for the most current list of requirements and their completion status.)
+
+* Connecting to Kaltura requires an app token.
+* It works only with captioned media, which was presumably written by or approved by media owners.  At this time, only SRT captions are supported.
+* Captions from media are reorganized into chunks.  The chunk duration is configurable, with a default of two minutes.
+* It returns a list of LangChain `Document` object(s), each containing a caption chunk and metadata.
+* Caption chunks' metadata contains source URLs to the media, which includes timestamps to the specific chunk of the video.
+
+## Test Suite
 
 Run the `testing` submodule to see a complete test of the `KalturaCaptionLoader`, which includes mocking of the Kaltura API.
 
 ```shell
-python -m LangChainKaltura.tests
+python -m tests
 ```
