@@ -1,6 +1,6 @@
-# LangChainKaltura (langchain_kaltura)
+# LangChainKaltura
 
-A LangChain vector store loader for captions of videos hosted in Kaltura (UMich's MiVideo service).
+A LangChain vector store loader for captions of videos hosted in Kaltura (the basis of UMich's MiVideo service).
 
 ## Installation
 
@@ -35,7 +35,7 @@ See `example.py` for a detailed example, which reads parameters from `.env` (bas
 
 ## Features
 
-(See issue umich-its-ai/langchain_kaltura#1 for the most current list of requirements and their completion status.)
+(See issue [#1](https://github.com/umich-its-ai/langchain_kaltura/issues/1) for the most current list of requirements and their completion status.)
 
 * Connecting to Kaltura requires an app token.
 * It works only with captioned media, which was presumably written by or approved by media owners.  At this time, only SRT captions are supported.
@@ -50,3 +50,8 @@ Run the `testing` submodule to see a complete test of the `KalturaCaptionLoader`
 ```shell
 python -m tests
 ```
+
+## Credits
+
+* Mr. Lance E Sloan (@lsloan) - Development
+* Melinda Kraft - Kaltura advising
