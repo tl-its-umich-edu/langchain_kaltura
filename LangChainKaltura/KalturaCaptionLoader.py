@@ -19,7 +19,7 @@ class KalturaCaptionLoader(BaseLoader):
     for every media contained in a specific category.
 
     Following the pattern of other LangChain loaders, all configuration of
-    KalturaCaptionLoader is done via parameters to the constructor.  After an
+    KalturaCaptionLoader is done via constructor parameters.  After an
     instance of the class has been created, call its `load()` method to begin
     working and return results.
     """
