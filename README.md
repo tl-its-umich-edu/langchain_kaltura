@@ -10,7 +10,7 @@ pip install LangChainKaltura
 
 ## Usage
 
-Import it, instantiate it with all the required parameters, and call its `run()` method…
+Instantiate `KalturaCaptionLoader` with all the required parameters, then invoke its `load()` method…
 
 ```python
 import os
@@ -31,7 +31,7 @@ documents = captionLoader.load()
 print(documents)
 ```
 
-See `example.py` for a detailed example, which reads parameters from `.env` (based on `.env.example`) and prints the results as JSON.
+See the repo for `example.py`, a more detailed example which reads parameters from `.env` (based on `.env.example`) and prints the results as JSON.
 
 ## Features
 
