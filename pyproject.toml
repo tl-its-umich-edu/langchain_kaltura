@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "LangChainKaltura"
 version = "0.0.1"
 authors = [
-    { name="Mr. Lance E Sloan", email="lsloan-github.com@umich.edu" },
+    { name = "Mr. Lance E Sloan", email = "lsloan-github.com@umich.edu" },
 ]
 description = "Collects captions from media in Kaltura and produces LangChain Document objects."
 readme = "README.md"
@@ -15,7 +15,24 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License (GPL)",
     "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+keywords = [
+    "Kaltura",
+    "LangChain",
+    "caption",
+    "AI",
+    "Artificial Intelligence",
+]
+dependencies = [
+    "KalturaApiClient",
+    "langchain",
+    "lxml",
+    "requests",
+    "pysrt",
+]
+license = { file = "LICENSE.txt" }
 
 [project.urls]
 Homepage = "https://github.com/umich-its-ai/langchain_kaltura"
