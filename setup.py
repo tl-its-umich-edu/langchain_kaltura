@@ -26,5 +26,9 @@ setuptools.setup(
     python_requires='>=3.11.8',
     include_package_data=True,  # to include tests/fixtures/*
     install_requires=[
-        r.split('=')[0] for r in open('requirements.txt').read().split()],
+        'KalturaApiClient',
+        'langchain',
+        'lxml',
+        'pysrt',
+        'requests', ],
 )
