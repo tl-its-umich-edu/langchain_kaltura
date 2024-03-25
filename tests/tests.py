@@ -2,8 +2,16 @@ import json
 import os.path
 from http import HTTPMethod
 
-import flask
-from http_server_mock import HttpServerMock
+try:
+    import flask
+except ImportError:
+    raise ImportError('Please install Flask with `pip install flask`')
+
+try:
+    from http_server_mock import HttpServerMock
+except ImportError:
+    raise ImportError('Please install http_server_mock with '
+                      '`pip install http_server_mock`')
 
 from LangChainKaltura import KalturaCaptionLoader
 
