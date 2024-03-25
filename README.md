@@ -45,7 +45,7 @@ See the repo for `example.py`, a more detailed example which reads parameters fr
 
 ## Test Suite
 
-Run the `testing` submodule to see a complete test of the `KalturaCaptionLoader`, which includes mocking of the Kaltura API.
+Run the accompanying `tests` module to see a complete test of the `KalturaCaptionLoader`, which includes mocking of the Kaltura API.
 
 ```shell
 python -m tests

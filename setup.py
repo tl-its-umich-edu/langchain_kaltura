@@ -20,9 +20,9 @@ setuptools.setup(
         'License :: OSI Approved :: GNU General Public License (GPL)',
         'Operating System :: OS Independent',
         'Development Status :: 3 - Alpha',
-        'Topic :: Scientific/Engineering :: Artificial Intelligence',],
+        'Topic :: Scientific/Engineering :: Artificial Intelligence', ],
     keywords=[
-        'Kaltura', 'LangChain', 'caption', 'AI', 'Artificial Intelligence',],
+        'Kaltura', 'LangChain', 'caption', 'AI', 'Artificial Intelligence', ],
     python_requires='>=3.11.8',
     include_package_data=True,  # to include tests/fixtures/*
     install_requires=[
