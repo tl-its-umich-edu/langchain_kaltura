@@ -52,7 +52,7 @@
                 <licenseType>-1</licenseType>
                 <version>0</version>
                 <thumbnailUrl>https://cdnsecakmi.kaltura.com/p/__partnerId__/sp/__partnerId__00/thumbnail/entry_id/1_mediaId/version/100031</thumbnailUrl>
-                <accessControlId>939562</accessControlId>
+                <accessControlId>1_accessControlId</accessControlId>
                 <startDate />
                 <endDate />
                 <referenceId />
@@ -60,7 +60,7 @@
                 <replacedEntryId />
                 <replacementStatus>0</replacementStatus>
                 <partnerSortValue>0</partnerSortValue>
-                <conversionProfileId>7193231</conversionProfileId>
+                <conversionProfileId>1_conversionProfileId</conversionProfileId>
                 <redirectEntryId />
                 <rootEntryId>1_mediaId</rootEntryId>
                 <parentEntryId />
