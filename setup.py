@@ -25,10 +25,7 @@ setuptools.setup(
         'Kaltura', 'LangChain', 'caption', 'AI', 'Artificial Intelligence', ],
     python_requires='>=3.11.8',
     include_package_data=True,  # to include tests/fixtures/*
+    data_files = [('', ['requirements.txt'])],
     install_requires=[
-        'KalturaApiClient',
-        'langchain',
-        'lxml',
-        'pysrt',
-        'requests', ],
+        r.split('=')[0] for r in open('requirements.txt').read().split()],
 )
