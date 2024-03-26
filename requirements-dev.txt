@@ -1,3 +1,4 @@
 -r requirements.txt
 flask
 http_server_mock
+python-dotenv
