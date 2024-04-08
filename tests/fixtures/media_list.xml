@@ -27,12 +27,12 @@
                 <msDuration>262316</msDuration>
                 <durationType />
                 <id>1_mediaId</id>
-                <name>Pinball Wizard - Elton John &amp; The Who - "Tommy" (1975)</name>
-                <description>A psychosomatically blind, deaf, and mute boy becomes a master pinball player and, subsequently, the figurehead of a cult.&lt;br&gt;</description>
+                <name>The Victors - University of Michigan 2021 Commencement</name>
+                <description>"The Victors - University of Michigan 2021 Commencement" from https://www.youtube.com/watch?v=TKCMw0utiak</description>
                 <partnerId>__partnerId__</partnerId>
-                <userId>lsloan</userId>
-                <creatorId>lsloan</creatorId>
-                <tags>tommy, elton john, the who, music video, movie clip, pinball, wizard, music, t&amp;l, tl weekly standup</tags>
+                <userId>__userId__</userId>
+                <creatorId>__creatorId__</creatorId>
+                <tags>music video, music</tags>
                 <adminTags />
                 <categories />
                 <categoriesIds />
@@ -48,7 +48,7 @@
                 <groupId />
                 <partnerData />
                 <downloadUrl>https://cdnapisec.kaltura.com/p/__partnerId__/sp/__partnerId__00/playManifest/entryId/1_mediaId/format/download/protocol/https/flavorParamIds/0</downloadUrl>
-                <searchText>_PAR_ONLY_ ___partnerId___ _MEDIA_TYPE_1|  Pinball Wizard - Elton John &amp; The Who - Tommy (1975) tommy, elton john, the who, music video, movie clip, pinball, wizard, music, t&amp;l, tl weekly standup A psychosomatically blind, deaf, and mute boy becomes a master pinball player and, subsequently, the figurehead of a cult.&lt;br&gt;</searchText>
+                <searchText>_PAR_ONLY_ ___partnerId___ _MEDIA_TYPE_1| The Victors - University of Michigan 2021 Commencement music video, music "The Victors - University of Michigan 2021 Commencement" from https://www.youtube.com/watch?v=TKCMw0utiak</searchText>
                 <licenseType>-1</licenseType>
                 <version>0</version>
                 <thumbnailUrl>https://cdnsecakmi.kaltura.com/p/__partnerId__/sp/__partnerId__00/thumbnail/entry_id/1_mediaId/version/100031</thumbnailUrl>

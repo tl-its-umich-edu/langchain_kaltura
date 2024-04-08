@@ -33,10 +33,10 @@ def serviceActionHandler(service, action):
 
 
 # contrived route, specified in `caption_captionasset_getUrl.xml`
-@app.route('/captionAsset/contents',
+@app.route('/captionAsset/contents/<captionFilename>',
            methods=[HTTPMethod.GET])
-def captionAssetContents():
-    return open(f'{fixturesPathname}pinball_wizard.srt').read()
+def captionAssetContents(captionFilename):
+    return open(f'{fixturesPathname}{captionFilename}').read()
 
 
 def main(host: str = HOST_DEFAULT, port: int = PORT_DEFAULT):
