@@ -1,6 +1,6 @@
 import hashlib
 from enum import Enum, auto
-from typing import List, Self
+from typing import List, Self, Sequence
 
 import pysrt
 import requests
@@ -23,8 +23,14 @@ class KalturaCaptionLoader(BaseLoader):
     instance of the class has been created, call its `load()` method to begin
     working and return results.
     """
-    EXPIRYSECONDSDEFAULT = 86400  # 24 hours
-    CHUNKMINUTESDEFAULT = 2
+    EXPIRY_SECONDS_DEFAULT = 86400  # 24 hours
+    CHUNK_MINUTES_DEFAULT = 2
+    LANGUAGES_DEFAULT = (
+        'en-us', 'en', 'en-ca', 'en-gb', 'en-ie', 'en-au', 'en-nz', 'en-bz',
+        'en-jm', 'en-ph', 'en-tt', 'en-za', 'en-zw')
+    """Various English dialects from ISO 639-1, ordered by similarity to 
+      `en-us`.  For an unofficial listing of languages with dialects, see: 
+      https://gist.github.com/jrnk/8eb57b065ea0b098d571#file-iso-639-1-language-json"""
 
     class FilterType(Enum):
         """
@@ -55,8 +61,9 @@ class KalturaCaptionLoader(BaseLoader):
                  filterType: FilterType,
                  filterValue: str,
                  urlTemplate: str,
-                 expirySeconds: int = EXPIRYSECONDSDEFAULT,
-                 chunkMinutes: int = CHUNKMINUTESDEFAULT,
+                 languages: Sequence[str] | None = LANGUAGES_DEFAULT,
+                 expirySeconds: int = EXPIRY_SECONDS_DEFAULT,
+                 chunkMinutes: int = CHUNK_MINUTES_DEFAULT,
                  kalturaApiBaseUrl: str = None):
         """
         :param partnerId: Partner ID in Kaltura (i.e., the KAF ID).
@@ -75,12 +82,18 @@ class KalturaCaptionLoader(BaseLoader):
             the fields `mediaId` and `startSeconds` ONLY to be filled in by
             `str.format()`.  E.g.,
             `https://example.edu/v/{mediaId}?t={startSeconds}`.
+        :param languages: *Optional* Sequence of strings containing language
+            codes for which to load captions.  If set to `None`, captions from
+            all available languages will be loaded.  *Defaults to value of
+            `KalturaCaptionLoader.LANGUAGES_DEFAULT`, a list of various English
+            dialects from ISO 639-1, ordered by similarity to `en-us`.  See:
+            https://gist.github.com/jrnk/8eb57b065ea0b098d571#file-iso-639-1-language-json*
         :param expirySeconds: *Optional* Integer number of seconds for length
             of the Kaltura auth. session.  *Defaults to value of
-            `KalturaCaptionLoader.EXPIRYSECONDSDEFAULT`.*
+            `KalturaCaptionLoader.EXPIRY_SECONDS_DEFAULT`.*
         :param chunkMinutes: *Optional* Integer number of minutes of the length
             of each caption chunk loaded from Kaltura.  *Defaults to value of
-            `KalturaCaptionLoader.CHUNKMINUTESDEFAULT`.*
+            `KalturaCaptionLoader.CHUNK_MINUTES_DEFAULT`.*
         :param kalturaApiBaseUrl: *Optional* String base URL of the Kaltura API
             service.  *Defaults to value of
             `KalturaConfiguration().serviceUrl`.*
@@ -128,6 +141,7 @@ class KalturaCaptionLoader(BaseLoader):
 
         self.chunkMinutes = int(chunkMinutes)
         self.urlTemplate = urlTemplate
+        self.languages = map(str.lower, languages)
 
     def setMediaEntry(self, mediaEntryId: str) -> Self:
         self.mediaFilter = KalturaMediaEntryFilter()
@@ -164,6 +178,12 @@ class KalturaCaptionLoader(BaseLoader):
             #   However, media doesn't always have a default caption asset.
             #   It seems wise to load all captions, even if they're all of
             #   the same language or low accuracy ratings.
+
+            # Skip captions not in specified language(s)
+            if (self.languages is not None and
+                    captionAsset.languageCode.value.lower() not in
+                    self.languages):
+                continue
 
             # Only the SRT format supported at this time
             if captionAsset.format.value == KalturaCaptionType.SRT:
