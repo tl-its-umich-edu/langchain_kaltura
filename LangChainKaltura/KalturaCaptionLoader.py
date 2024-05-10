@@ -141,7 +141,8 @@ class KalturaCaptionLoader(BaseLoader):
 
         self.chunkMinutes = int(chunkMinutes)
         self.urlTemplate = urlTemplate
-        self.languages = map(str.lower, languages)
+        self.languages = (None if languages is None
+            else map(str.lower, languages))
 
     def setMediaEntry(self, mediaEntryId: str) -> Self:
         self.mediaFilter = KalturaMediaEntryFilter()
