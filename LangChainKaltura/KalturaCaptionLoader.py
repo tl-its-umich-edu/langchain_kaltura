@@ -201,17 +201,17 @@ class KalturaCaptionLoader(BaseLoader):
                         starts_after={
                             'minutes': (start := self.chunkMinutes * index)},
                         ends_before={'minutes': start + self.chunkMinutes})):
+                    timestamp = captionsSection[0].start
                     captionDocuments.append(Document(
                         page_content=captionsSection.text,
-                        # TODO: What other metadata should be included?
                         metadata={
                             # Start time is sliced to remove milliseconds.
                             'source': self.urlTemplate.format(
                                 mediaId=mediaEntry.id,
-                                startSeconds=str(
-                                    captionsSection[0].start.ordinal)[0:-3]),
+                                startSeconds=timestamp.ordinal // 1000),
                             'filename': mediaEntry.name,
                             'media_id': mediaEntry.id,
+                            'timestamp': str(timestamp)[0:-4],  # no ms
                             'caption_id': captionAsset.id,
                             'language_code': captionAsset.languageCode.value,
                             'caption_format': 'SRT', }))
