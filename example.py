@@ -9,19 +9,22 @@ from LangChainKaltura import KalturaCaptionLoader
 
 
 def main() -> List[Document]:
+    # Load environment variables from `.env` file
     load_dotenv()
 
+    # JSON not required, but useful for debugging
     mediaFilter = json.loads(
         os.getenv('FILTERJSON', '{}'))
 
+    # Most arguments don't need keywords, but useful for debugging
     captionLoader = KalturaCaptionLoader(
-        os.getenv('PARTNERID'),
-        os.getenv('APPTOKENID'),
-        os.getenv('APPTOKENVALUE'),
-        KalturaCaptionLoader.FilterType(
+        partnerId=os.getenv('PARTNERID'),
+        appTokenId=os.getenv('APPTOKENID'),
+        appTokenValue=os.getenv('APPTOKENVALUE'),
+        filterType=KalturaCaptionLoader.FilterType(
             mediaFilter.get('type')),
-        mediaFilter.get('value'),
-        os.getenv('URLTEMPLATE'),
+        filterValue=mediaFilter.get('value'),
+        urlTemplate=os.getenv('URLTEMPLATE'),
     )
 
     documents = captionLoader.load()
