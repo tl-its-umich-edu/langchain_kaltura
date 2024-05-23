@@ -4,8 +4,10 @@ A LangChain vector store loader for captions of videos hosted in Kaltura (the ba
 
 ## Installation
 
+Download the wheel file (`.whl`) from the latest release on the [Releases](https://github.com/umich-its-ai/langchain_kaltura/releases) page.
+
 ```shell
-pip install LangChainKaltura
+pip install LangChainKaltura-0.0.1-py3-none-any.whl
 ```
 
 ## Usage
