@@ -2,3 +2,4 @@
 flask
 http_server_mock
 python-dotenv
+pip-review
