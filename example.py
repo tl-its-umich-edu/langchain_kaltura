@@ -6,6 +6,7 @@ from dotenv import load_dotenv  # pip install python-dotenv
 from langchain_core.documents import Document
 
 from LangChainKaltura import KalturaCaptionLoader
+from LangChainKaltura.MiVideoAPI import MiVideoAPI
 
 
 def main() -> List[Document]:
@@ -16,15 +17,20 @@ def main() -> List[Document]:
     mediaFilter = json.loads(
         os.getenv('FILTERJSON', '{}'))
 
+    api = MiVideoAPI(
+        host=os.getenv('MIVIDEO_API_HOST'),
+        authId=os.getenv('MIVIDEO_API_AUTH_ID'),
+        authSecret=os.getenv('MIVIDEO_API_AUTH_SECRET'),
+    )
+
     # Most arguments don't need keywords, but useful for debugging
     captionLoader = KalturaCaptionLoader(
-        partnerId=os.getenv('PARTNERID'),
-        appTokenId=os.getenv('APPTOKENID'),
-        appTokenValue=os.getenv('APPTOKENVALUE'),
-        filterType=KalturaCaptionLoader.FilterType(
-            mediaFilter.get('type')),
-        filterValue=mediaFilter.get('value'),
+        apiClient=api,
+        courseId='512931',
+        userId='813788',
         urlTemplate=os.getenv('URLTEMPLATE'),
+        chunkSeconds=int(os.getenv('CHUNKSECONDS')
+                         or KalturaCaptionLoader.CHUNK_SECONDS_DEFAULT),
     )
 
     documents = captionLoader.load()
