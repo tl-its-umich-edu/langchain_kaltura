@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml>
+    <result>
+        <objectType>KalturaSessionInfo</objectType>
+        <ks>startSessionKs</ks>
+        <sessionType>0</sessionType>
+        <partnerId>__partnerId__</partnerId>
+        <userId>appTokenApiUser@example.edu</userId>
+        <expiry>2556143999</expiry>
+        <privileges>sessionid:1_sessionId,apptoken:1_sessionId,list:*,setrole:1_roleId</privileges>
+    </result>
+</xml>

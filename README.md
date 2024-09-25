@@ -1,14 +1,59 @@
-# langchain_kaltura — README
+# LangChainKaltura
 
-A langchain vector store loader for captions of videos hosted in Kaltura (UMich's MiVideo service).
+A LangChain vector store loader for captions of videos hosted in Kaltura (the basis of UMich's MiVideo service).
 
-## Requirements
+## Installation
 
-(See issue umich-its-ai/langchain_kaltura#1 for the most current list of requirements and their completion status.)
+Download the wheel file (`.whl`) from the latest release on the [Releases](https://github.com/umich-its-ai/langchain_kaltura/releases) page.
 
-* It must return langchain `Document` class(es).
-* This should be a standalone, headless application, which could be invoked as part of a more complex process.
-* When processing captions from videos, they should be split into two-minute chunks.
-* When queried, it should return URLs to videos which include timestamps to the specific two-minute window of the video.
-* It will only work with videos that include captions, which were written or approved by instructors.
-* When working with Kaltura, an admin token **_MUST NOT_** be required.
+```shell
+pip install LangChainKaltura-0.0.1-py3-none-any.whl
+```
+
+## Usage
+
+Instantiate `KalturaCaptionLoader` with all the required parameters, then invoke its `load()` method…
+
+```python
+import os
+
+from LangChainKaltura import \
+    KalturaCaptionLoader
+
+captionLoader = KalturaCaptionLoader(
+    os.getenv('PARTNERID'),
+    os.getenv('APPTOKENID'),
+    os.getenv('APPTOKENVALUE'),
+    KalturaCaptionLoader.FilterType(
+        os.getenv('FILTERTYPE')),
+    os.getenv('FILTERVALUE'),
+    os.getenv('URLTEMPLATE'))
+
+documents = captionLoader.load()
+print(documents)
+```
+
+See the repo for `example.py`, a more detailed example which reads parameters from `.env` (based on `.env.example`) and prints the results as JSON.
+
+## Features
+
+(See issue [#1](https://github.com/umich-its-ai/langchain_kaltura/issues/1) for the most current list of requirements and their completion status.)
+
+* Connecting to Kaltura requires an app token.
+* It works only with captioned media, which was presumably written by or approved by media owners.  At this time, only SRT captions are supported.
+* Captions from media are reorganized into chunks.  The chunk duration is configurable, with a default of two minutes.
+* It returns a list of LangChain `Document` object(s), each containing a caption chunk and metadata.
+* Caption chunks' metadata contains source URLs to the media, which includes timestamps to the specific chunk of the video.
+
+## Test Suite
+
+Run the accompanying `tests` module to see a complete test of the `KalturaCaptionLoader`, which includes mocking of the Kaltura API.
+
+```shell
+python -m tests
+```
+
+## Credits
+
+* Mr. Lance E Sloan (@lsloan) - Development
+* Melinda Kraft - Kaltura advising
