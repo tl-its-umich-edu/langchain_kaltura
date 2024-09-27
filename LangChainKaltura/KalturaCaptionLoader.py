@@ -2,7 +2,7 @@ from enum import Enum, auto
 from typing import List, Sequence
 
 import pysrt
-from LangChainKaltura.AbstractKalturaAPI import AbstractKalturaAPI
+from LangChainKaltura.AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
 from langchain_community.document_loaders.base import BaseLoader
 from langchain_core.documents import Document
 
@@ -42,7 +42,7 @@ class KalturaCaptionLoader(BaseLoader):
             return cls(value)
 
     def __init__(self,
-                 apiClient: AbstractKalturaAPI,
+                 apiClient: AbstractMediaPlatformAPI,
                  courseId: str,
                  userId: str,
                  urlTemplate: str,

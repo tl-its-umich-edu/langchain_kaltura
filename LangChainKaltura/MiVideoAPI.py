@@ -4,11 +4,10 @@ import os
 import requests
 from dotenv import load_dotenv
 
-# from AbstractKalturaAPI import AbstractKalturaAPI
-from .AbstractKalturaAPI import AbstractKalturaAPI
+from .AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
 
 
-class MiVideoAPI(AbstractKalturaAPI):
+class MiVideoAPI(AbstractMediaPlatformAPI):
     """
     MiVideo API client
 
