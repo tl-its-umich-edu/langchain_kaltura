@@ -37,6 +37,7 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         response = requests.post(url, params=params, headers=headers)
         response.raise_for_status()
         tokenData = response.json()
+        print('_getAuthToken', response.elapsed.total_seconds())
         return f"{tokenData['token_type']} {tokenData['access_token']}"
 
     def getMediaList(self, courseId, userId, pageIndex=1, pageSize=500):
@@ -45,6 +46,7 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         headers = {'LMS-User-Id': userId, **self.headers}
         response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
+        print('getMediaList', courseId, response.elapsed.total_seconds())
         return response.json().get('objects', [])
 
     def getCaptionList(self, courseId, userId, mediaId):
@@ -52,6 +54,7 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         headers = {'LMS-User-Id': userId, **self.headers}
         response = requests.get(url, headers=headers)
         response.raise_for_status()
+        print('getCaptionList', mediaId, response.elapsed.total_seconds())
         return response.json().get('objects', [])
 
     def getCaptionText(self, courseId, userId, captionId):
@@ -59,6 +62,7 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         headers = {'LMS-User-Id': userId, **self.headers}
         response = requests.get(url, headers=headers)
         response.raise_for_status()
+        print('getCaptionText', captionId, response.elapsed.total_seconds())
         return response.text
 
 
