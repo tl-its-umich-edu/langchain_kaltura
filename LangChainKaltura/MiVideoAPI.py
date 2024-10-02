@@ -1,9 +1,7 @@
 import base64
 import logging
-import os
 
 import requests
-from dotenv import load_dotenv
 from tenacity import retry, stop_after_attempt, wait_exponential, before_log
 
 from .AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
@@ -94,29 +92,3 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         response.raise_for_status()
         logger.info(f'getCaptionText {response.elapsed.total_seconds()}s')
         return response.text
-
-
-if '__main__' == __name__:
-    load_dotenv()
-
-    api = MiVideoAPI(
-        host=os.getenv('MIVIDEO_API_HOST'),
-        authId=os.getenv('MIVIDEO_API_AUTH_ID'),
-        authSecret=os.getenv('MIVIDEO_API_AUTH_SECRET'),
-    )
-
-    courseId = '512931'
-    userId = '813788'
-
-    mediaList = api.getMediaList(courseId, userId)
-    mediaId = mediaList[0]['id']
-    print('Media ID:', mediaId)
-
-    captionList = api.getCaptionList(courseId, userId, mediaId)
-    captionId = captionList[0]['id']
-    print('Caption ID:', captionId)
-
-    captionTextLines = api.getCaptionText(courseId, userId,
-                                          captionId).splitlines()
-    print('Caption text…')
-    print('\n'.join(captionTextLines[0:6]))
