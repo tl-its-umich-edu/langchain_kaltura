@@ -46,10 +46,20 @@ def get_kaltura_params():
         'format': 1  # JSON format response
     }
 
+@app.post("/um/oauth2/token")
+async def oauth_token(authorization: Annotated[str | None, Header()], grant_type: str, scope: str):
+    try:
+        if authorization!='' and grant_type!='' and scope!='':
+            return {'access_token':'mock_token'}
+        else:
+            raise Exception("Invalid token scheme")
+    except:
+        raise Exception("Error in the server")
+
 # Kaltura API endpoint: media.action.list
 
 
-@app.get("/course/{course_id}/media")
+@app.get("/um/aa/mivideo/v1/course/{course_id}/media")
 async def media_list(headers: Annotated[LMSHeader, Header()], course_id: int, pageIndex: int = 1, pageSize: int = 500):
     try:
         response = httpx.post(f'{KALTURA_PARAMS.host}/{KALTURA_MEDIA_LIST_PATH}', json={
@@ -72,7 +82,7 @@ async def media_list(headers: Annotated[LMSHeader, Header()], course_id: int, pa
 # Kaltura API endpoint: caption.caption_asset.action.list
 
 
-@app.get("/course/{course_id}/media/{media_id}/captions")
+@app.get("/um/aa/mivideo/v1/course/{course_id}/media/{media_id}/captions")
 async def caption_list(headers: Annotated[LMSHeader, Header()], course_id: int, media_id: str, pageIndex: int = 1, pageSize: int = 500):
     try:
         response = httpx.post(f'{KALTURA_PARAMS.host}/{KALTURA_CAPTION_LIST_PATH}', json={
@@ -94,7 +104,7 @@ async def caption_list(headers: Annotated[LMSHeader, Header()], course_id: int, 
 # Kaltura API endpoint: caption.caption_asset.action.serve
 
 
-@app.get("/course/{course_id}/captions/{caption_id}/text", response_class=PlainTextResponse)
+@app.get("/um/aa/mivideo/v1/course/{course_id}/captions/{caption_id}/text", response_class=PlainTextResponse)
 async def caption_serve(headers: Annotated[LMSHeader, Header()], course_id: int, caption_id: str):
     try:
         response = httpx.post(f'{KALTURA_PARAMS.host}/{KALTURA_CAPTION_SERVE_PATH}', json={
