@@ -50,7 +50,7 @@ def get_kaltura_params():
 async def oauth_token(authorization: Annotated[str | None, Header()], grant_type: str, scope: str):
     try:
         if authorization!='' and grant_type!='' and scope!='':
-            return {'access_token':'mock_token'}
+            return {'access_token':'mock_token', 'token_type': 'Bearer'}
         else:
             raise Exception("Invalid token scheme")
     except:
