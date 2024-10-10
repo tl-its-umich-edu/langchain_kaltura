@@ -2,7 +2,8 @@ import base64
 import logging
 
 import requests
-from tenacity import retry, stop_after_attempt, wait_exponential, before_log
+from tenacity import retry, stop_after_attempt, wait_exponential, \
+    before_sleep_log
 
 from .AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
 
@@ -25,10 +26,14 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
     opposed to Kaltura's proprietary method.
     """
 
+    DEFAULT_TIMEOUT = 2
+    DEFAULT_VERSION = 'v1'
+
     _METHOD_GET = 'GET'
     _METHOD_POST = 'POST'
 
-    def __init__(self, host, authId, authSecret, version='v1', timeout=2):
+    def __init__(self, host, authId, authSecret, version=DEFAULT_VERSION,
+                 timeout=DEFAULT_TIMEOUT):
         self.host = host
         self.baseUrl = f'https://{self.host}/um/aa/mivideo/{version}'
         self.timeout = timeout
@@ -36,7 +41,7 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
             'Authorization': self._getAuthToken(authId, authSecret)}
 
     @retry(stop=stop_after_attempt(3), wait=wait_exponential(max=10),
-           before=before_log(logger, logging.INFO))
+           before_sleep=before_sleep_log(logger, logging.INFO))
     def _requestWithRetry(self, url, method=_METHOD_GET, params=None,
                           headers=None):
         """
