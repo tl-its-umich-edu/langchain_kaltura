@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class AbstractKalturaAPI(ABC):
+class AbstractMediaPlatformAPI(ABC):
     # @abstractmethod
     # def __init__(self, host, authId, authSecret, courseId, userId):
     #     pass

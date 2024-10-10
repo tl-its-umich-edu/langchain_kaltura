@@ -23,11 +23,10 @@ def main() -> List[Document]:
         authSecret=os.getenv('MIVIDEO_API_AUTH_SECRET'),
     )
 
-    # Most arguments don't need keywords, but useful for debugging
     captionLoader = KalturaCaptionLoader(
         apiClient=api,
-        courseId='512931',
-        userId='813788',
+        courseId=os.getenv('COURSEID'),
+        userId=os.getenv('USERID'),
         urlTemplate=os.getenv('URLTEMPLATE'),
         chunkSeconds=int(os.getenv('CHUNKSECONDS')
                          or KalturaCaptionLoader.CHUNK_SECONDS_DEFAULT),
