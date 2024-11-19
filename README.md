@@ -51,6 +51,7 @@ Run the accompanying `tests` module to see a complete test of the `KalturaCaptio
 
 ```shell
 python -m tests
+python -m unittest tests/test_MiVideoAPI.py
 ```
 
 ## Credits
