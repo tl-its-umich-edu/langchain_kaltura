@@ -38,8 +38,8 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
     DEFAULT_TIMEOUT: int = 2
     DEFAULT_VERSION: str = 'v1'
 
-    METHOD_GET: str = 'GET'
-    METHOD_POST: str = 'POST'
+    _METHOD_GET: str = 'GET'
+    _METHOD_POST: str = 'POST'
 
     def __init__(self, host: str, authId: str, authSecret: str,
                  timeout: int = DEFAULT_TIMEOUT,
@@ -61,11 +61,11 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         self.headers: Dict[str, str] = {
             'Authorization': self._getAuthToken(authId, authSecret)}
 
-    @retry(before_sleep=before_sleep_log(logger, logging.INFO),
+    @retry(before_sleep=before_sleep_log(logger, logging.WARNING),
            retry=retry_if_exception_type(Timeout),
            stop=stop_after_attempt(3),
            wait=wait_exponential(max=10), )
-    def _requestWithRetry(self, url: str, method: str = METHOD_GET,
+    def _requestWithRetry(self, url: str, method: str = _METHOD_GET,
                           params: Optional[Dict[str, Any]] = None,
                           headers: Optional[
                               Dict[str, str]] = None) -> requests.Response:
@@ -74,7 +74,7 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
 
         Args:
             url (str): The URL to make the request to.
-            method (str, optional): HTTP method to use. Defaults to METHOD_GET.
+            method (str, optional): HTTP method to use. Defaults to _METHOD_GET.
             params (Optional[Dict[str, Any]], optional): Query parameters.
                 Defaults to None.
             headers (Optional[Dict[str, str]], optional): Request headers.
@@ -95,11 +95,14 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
                 timeout=self.timeout)
             response.raise_for_status()
             return response
+        except Timeout as e:
+            logger.warning(f'Request "{url}" timed out: {e}')
+            raise
         except (HTTPError, Timeout, RequestException) as e:
-            logger.error(f"Request failed: {e}")
+            logger.error(f'Request failed: {e}')
             raise
         except Exception as e:
-            logger.error(f"An unexpected error occurred: {e}")
+            logger.error(f'An unexpected error occurred: {e}')
             raise
 
     def _getAuthToken(self, authId: str, authSecret: str) -> str:
@@ -122,33 +125,34 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         """
         try:
             auth: str = f'{authId}:{authSecret}'
-            # auth: str = f'{authId}:fubar'
             authBase64: str = base64.b64encode(auth.encode('utf-8')).decode(
                 'utf-8')
 
+            # FIXME: this API raises HTTP 500 error if authSecret is incorrect
             url: str = f'https://{self.host}/um/oauth2/token'
             params: Dict[str, str] = {'grant_type': 'client_credentials',
                                       'scope': 'mivideo'}
             headers: Dict[str, str] = {'Authorization': f'Basic {authBase64}'}
 
             response: requests.Response = self._requestWithRetry(
-                url, method=self.METHOD_POST, params=params, headers=headers)
+                url, method=self._METHOD_POST, params=params, headers=headers)
             response.raise_for_status()
             tokenData: Dict[str, Any] = response.json()
             logger.debug(f'_getAuthToken {response.elapsed.total_seconds()}s')
             return f"{tokenData['token_type']} {tokenData['access_token']}"
         except RetryError as e:
-            logger.error(f"Retry attempts failed: {e}")
+            logger.error(f'Retry attempts failed: {e}')
             raise
         except (HTTPError, Timeout, RequestException) as e:
             if e.response.status_code == 401:
-                logger.error(f"Authorization failed: {e}")
+                logger.error(f'Authorization failed: {e}')
+                raise HTTPError('Authorization failed')
             else:
-                logger.error(f"Failed to get auth token: {e}")
+                logger.error(f'Failed to get auth token: {e}')
             raise
         except Exception as e:
             logger.error(
-                f"An unexpected error occurred while getting auth token: {e}")
+                f'An unexpected error occurred while getting auth token: {e}')
             raise
 
     def getMediaList(self, courseId: str, userId: str, pageIndex: int = 1,
