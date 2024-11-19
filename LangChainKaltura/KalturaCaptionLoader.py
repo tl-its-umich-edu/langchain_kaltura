@@ -1,3 +1,4 @@
+import logging
 from enum import Enum, auto
 from typing import List, Sequence
 
@@ -5,6 +6,10 @@ import pysrt
 from LangChainKaltura.AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
 from langchain_community.document_loaders.base import BaseLoader
 from langchain_core.documents import Document
+
+from LangChainKaltura.AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
+
+logger = logging.getLogger(__name__)
 
 
 class KalturaCaptionLoader(BaseLoader):
@@ -19,9 +24,9 @@ class KalturaCaptionLoader(BaseLoader):
     """
     EXPIRY_SECONDS_DEFAULT = 86400  # 24 hours
     CHUNK_SECONDS_DEFAULT = 120
-    LANGUAGES_DEFAULT = (
+    LANGUAGES_DEFAULT = {
         'en-us', 'en', 'en-ca', 'en-gb', 'en-ie', 'en-au', 'en-nz', 'en-bz',
-        'en-jm', 'en-ph', 'en-tt', 'en-za', 'en-zw')
+        'en-jm', 'en-ph', 'en-tt', 'en-za', 'en-zw'}
     """Various English dialects from ISO 639-1, ordered by similarity to 
       `en-us`.  For an unofficial listing of languages with dialects, see: 
       https://gist.github.com/jrnk/8eb57b065ea0b098d571#file-iso-639-1-language-json"""
@@ -59,7 +64,7 @@ class KalturaCaptionLoader(BaseLoader):
         self.userId = userId
         self.urlTemplate = urlTemplate
         self.languages = (None if languages is None
-                          else map(str.lower, languages))
+                          else set(map(str.lower, languages)))
         self.chunkSeconds = int(chunkSeconds)
 
     def load(self) -> List[Document]:
@@ -83,9 +88,12 @@ class KalturaCaptionLoader(BaseLoader):
             #   the same language or low accuracy ratings.
 
             # Skip captions not in specified language(s)
+            captionLanguage = captionAsset['languageCode'].lower()
             if (self.languages is not None and
-                    captionAsset['languageCode'].lower() not in
-                    self.languages):
+                    captionLanguage not in self.languages):
+                logger.info(f'Skipping caption ({captionAsset["id"]}) '
+                            f'in language "{captionLanguage}" '
+                            f'for media ({mediaEntry["id"]})')
                 continue
 
             # Only the SRT format supported at this time
