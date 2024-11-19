@@ -1,5 +1,5 @@
 -r requirements.txt
-flask
-http_server_mock
-python-dotenv
-pip-review
+Flask==3.0.3
+http_server_mock==1.7
+python-dotenv==1.0.1
+pip-review==1.3.0
