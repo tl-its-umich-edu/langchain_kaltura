@@ -28,17 +28,26 @@ def main() -> List[Document]:
     else:
         languages = set(languages.split(','))
 
+    courseId = os.getenv('COURSEID')
+
     captionLoader = KalturaCaptionLoader(
         apiClient=api,
-        courseId=os.getenv('COURSEID'),
+        courseId=courseId,
         userId=os.getenv('USERID'),
         languages=languages,
-        urlTemplate=os.getenv('URLTEMPLATE'),
+        urlTemplate=os.getenv('SOURCEURLTEMPLATE'),
         chunkSeconds=int(os.getenv('CHUNKSECONDS')
                          or KalturaCaptionLoader.CHUNK_SECONDS_DEFAULT),
     )
 
     documents = captionLoader.load()
+
+    courseUrlTemplate = os.getenv('COURSEURLTEMPLATE')
+
+    if courseUrlTemplate:
+        for document in documents:
+            document.metadata['course_context'] = courseUrlTemplate.format(
+                courseId=courseId)
 
     return documents
 
