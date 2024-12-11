@@ -1,11 +1,12 @@
 import base64
 import logging
+import uuid
 from typing import List, Dict, Any, Optional
 
 import requests
 from requests.exceptions import RequestException, HTTPError, Timeout
-from tenacity import retry, stop_after_attempt, wait_exponential, \
-    before_sleep_log, RetryError, retry_if_exception_type
+from tenacity import (retry, stop_after_attempt, wait_exponential,
+                      before_sleep_log, RetryError, retry_if_exception_type)
 
 from .AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
 
@@ -66,9 +67,8 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
            stop=stop_after_attempt(3),
            wait=wait_exponential(max=10), )
     def _requestWithRetry(self, url: str, method: str = _METHOD_GET,
-                          params: Optional[Dict[str, Any]] = None,
-                          headers: Optional[
-                              Dict[str, str]] = None) -> requests.Response:
+                          params: Dict[str, Any] = {},
+                          headers: Dict[str, str] = {}) -> requests.Response:
         """
         Makes a request with retry logic.
 
@@ -89,6 +89,11 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
             RequestException: If a request exception occurs.
             Exception: If an unexpected error occurs.
         """
+
+        # requestID logged on server and used for debugging
+        requestId = str(uuid.uuid4())
+        headers['X-Request-Id'] = requestId
+
         try:
             response: requests.Response = requests.request(
                 method, url, params=params, headers=headers,
@@ -96,13 +101,15 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
             response.raise_for_status()
             return response
         except Timeout as e:
-            logger.warning(f'Request "{url}" timed out: {e}')
+            logger.warning(f'Request "{url}" timed out: {e};'
+                           f' requestId: {requestId}')
             raise
         except (HTTPError, Timeout, RequestException) as e:
-            logger.error(f'Request failed: {e}')
+            logger.error(f'Request failed: {e}; requestId: {requestId}')
             raise
         except Exception as e:
-            logger.error(f'An unexpected error occurred: {e}')
+            logger.error(f'An unexpected error occurred: {e};'
+                         f' requestId: {requestId}')
             raise
 
     def _getAuthToken(self, authId: str, authSecret: str) -> str:
