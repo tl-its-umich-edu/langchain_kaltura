@@ -3,6 +3,8 @@ import os.path
 from http import HTTPMethod
 import sys
 
+from LangChainKaltura.MiVideoAPI import MiVideoAPI
+
 try:
     import flask
 except ImportError:
@@ -41,14 +43,9 @@ def captionAssetContents(captionFilename):
 
 def main(host: str = HOST_DEFAULT, port: int = PORT_DEFAULT):
     with app.run(host, port):
-        kalturaCaptions = KalturaCaptionLoader(
-            '_partner_ID_here_',
-            '_app_token_ID_here_',
-            '_app_token_value_here_',
-            KalturaCaptionLoader.FilterType.MEDIAID,
-            '1_mediaId',
-            'https://example.edu/v/{mediaId}?t={startSeconds}',
-            kalturaApiBaseUrl=f'http://{host}:{port}/')
-        documents = kalturaCaptions.load()
-        print(json.dumps([d.to_json()['kwargs'] for d in documents],
-                         indent=2, sort_keys=True))
+
+        api = MiVideoAPI(
+            host=f'{host}:{port}',
+            authId='MIVIDEO_API_AUTH_ID',
+            authSecret='MIVIDEO_API_AUTH_SECRET',
+        )
