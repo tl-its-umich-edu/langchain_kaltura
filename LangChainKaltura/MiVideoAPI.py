@@ -153,13 +153,13 @@ class MiVideoAPI(AbstractMediaPlatformAPI):
         except (HTTPError, Timeout, RequestException) as e:
             if e.response.status_code == 401:
                 logger.error(f'Authorization failed: {e}')
-                raise HTTPError('Authorization failed')
+                raise HTTPError('Authorization failed') from e
             else:
-                logger.error(f'Failed to get auth token: {e}')
-            raise
+                logger.error(f'Failed to get authZ token: {e}')
+                raise HTTPError('Failed to get authZ token') from e
         except Exception as e:
             logger.error(
-                f'An unexpected error occurred while getting auth token: {e}')
+                f'An unexpected error occurred while getting authZ token: {e}')
             raise
 
     def getMediaList(self, courseId: str, userId: str, pageIndex: int = 1,
