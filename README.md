@@ -4,7 +4,7 @@ A LangChain vector store loader for captions of videos hosted in Kaltura (the ba
 
 ## Installation
 
-Download the wheel file (`.whl`) from the latest release on the [Releases](https://github.com/umich-its-ai/langchain_kaltura/releases) page.
+Download the wheel file (`.whl`) from the latest release on the [Releases](https://github.com/tl-its-umich-edu/langchain_kaltura/releases) page.
 
 ```shell
 pip install LangChainKaltura-0.0.1-py3-none-any.whl
@@ -37,7 +37,7 @@ See the repo for `example.py`, a more detailed example which reads parameters fr
 
 ## Features
 
-(See issue [#1](https://github.com/umich-its-ai/langchain_kaltura/issues/1) for the most current list of requirements and their completion status.)
+(See issue [#1](https://github.com/tl-its-umich-edu/langchain_kaltura/issues/1) for the most current list of requirements and their completion status.)
 
 * Connecting to Kaltura requires an app token.
 * It works only with captioned media, which was presumably written by or approved by media owners.  At this time, only SRT captions are supported.
