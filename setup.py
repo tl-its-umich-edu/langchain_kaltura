@@ -10,10 +10,10 @@ setuptools.setup(
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     license_files=['LICENSE.txt', ],
-    url='https://github.com/umich-its-ai/langchain_kaltura',
+    url='https://github.com/tl-its-umich-edu/langchain_kaltura',
     project_urls={
-        'Issues': 'https://github.com/umich-its-ai/langchain_kaltura/issues',
-        'Homepage': 'https://github.com/umich-its-ai/langchain_kaltura', },
+        'Issues': 'https://github.com/tl-its-umich-edu/langchain_kaltura/issues',
+        'Homepage': 'https://github.com/tl-its-umich-edu/langchain_kaltura', },
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
