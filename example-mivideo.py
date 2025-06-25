@@ -3,7 +3,7 @@ import logging
 import os
 from typing import List
 
-from dotenv import load_dotenv  # pip install python-dotenv
+from dotenv import load_dotenv
 from langchain_core.documents import Document
 
 from LangChainKaltura import KalturaCaptionLoader
@@ -22,13 +22,13 @@ def main() -> List[Document]:
         authSecret=os.getenv('MIVIDEO_API_AUTH_SECRET'),
     )
 
+    courseId = os.getenv('COURSEID')
+
     languages = os.getenv('LANGUAGE_CODES_CSV')
     if not languages:
         languages = KalturaCaptionLoader.LANGUAGES_DEFAULT
     else:
         languages = set(languages.split(','))
-
-    courseId = os.getenv('COURSEID')
 
     captionLoader = KalturaCaptionLoader(
         apiClient=api,
