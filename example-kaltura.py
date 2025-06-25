@@ -1,17 +1,13 @@
 import json
 import logging
 import os
-import sys
 from typing import List
 
-from dotenv import load_dotenv  # pip install python-dotenv
+from dotenv import load_dotenv
 from langchain_core.documents import Document
 
 from LangChainKaltura import KalturaCaptionLoader
 from LangChainKaltura.KalturaAPI import KalturaAPI
-from KalturaClient.Plugins.Core import (KalturaSessionType, KalturaMediaEntry,
-                                        KalturaMediaEntryFilter)
-
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,29 +16,9 @@ def main() -> List[Document]:
     # Load environment variables from `.env` file
     load_dotenv()
 
-    api = KalturaAPI(
-        host='HOST',
-        authId='AUTHID',
-        authSecret=os.getenv('KALTURA_SESSION_TOKEN'),
-    )
+    api = KalturaAPI(os.getenv('KALTURA_SESSION_TOKEN'))
 
     courseId = os.getenv('COURSEID')
-    print(f'Course ID: {courseId}')
-
-    media = api.getMediaList(
-        courseId=courseId,
-        userId='USERID',
-    )
-
-    print(objectToJson(media))
-
-    print(f'Found {len(media)} media items.')
-
-
-    m: KalturaMediaEntry = media[0]
-    print(objectToJson(m))
-
-    sys.exit()
 
     languages = os.getenv('LANGUAGE_CODES_CSV')
     if not languages:
@@ -50,12 +26,10 @@ def main() -> List[Document]:
     else:
         languages = set(languages.split(','))
 
-    courseId = os.getenv('COURSEID')
-
     captionLoader = KalturaCaptionLoader(
         apiClient=api,
         courseId=courseId,
-        userId=os.getenv('USERID'),
+        userId='USERID',  # fake user ID, not used in Kaltura
         languages=languages,
         urlTemplate=os.getenv('SOURCEURLTEMPLATE'),
         chunkSeconds=int(os.getenv('CHUNKSECONDS')
@@ -72,24 +46,6 @@ def main() -> List[Document]:
                 courseId=courseId)
 
     return documents
-
-
-def objectToDict(obj):
-    objDict = {}
-    for key, value in getattr(obj, '__dict__', {}).items():
-        try:
-            json.dumps(value)
-            objDict[key] = value
-        except (TypeError, ValueError):
-            if hasattr(value, '__dict__'):
-                objDict[key] = objectToDict(value)
-                objDict[key]['@type'] = type(value).__name__
-            else:
-                objDict[key] = str(value)
-    return objDict
-
-def objectToJson(obj):
-    return json.dumps(objectToDict(obj), indent=2)
 
 
 if '__main__' == __name__:
