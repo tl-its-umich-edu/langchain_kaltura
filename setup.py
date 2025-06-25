@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='LangChainKaltura',
-    version='0.0.1',
+    version='0.0.2',
     author='Mr. Lance E Sloan',
     author_email='lsloan-github.com@umich.edu',
     description='Collects captions from media in Kaltura and produces '
