@@ -3,7 +3,6 @@ from enum import Enum, auto
 from typing import List, Sequence
 
 import pysrt
-from LangChainKaltura.AbstractMediaPlatformAPI import AbstractMediaPlatformAPI
 from langchain_community.document_loaders.base import BaseLoader
 from langchain_core.documents import Document
 
@@ -80,7 +79,9 @@ class KalturaCaptionLoader(BaseLoader):
             List[Document]:
         captionDocuments: List[Document] = []
         captionAssets = self.apiClient.getCaptionList(
-            self.courseId, self.userId, mediaEntry['id'])
+            courseId=self.courseId, userId=self.userId,
+            mediaId=mediaEntry['id'])
+
         for captionAsset in captionAssets:
             # XXX: Kaltura caption assets have an `isDefault` property.
             #   However, media doesn't always have a default caption asset.
@@ -100,7 +101,8 @@ class KalturaCaptionLoader(BaseLoader):
             if (int(captionAsset['format']) ==
                     self.KalturaCaptionTypeCode.SRT.value):
                 captionSource = self.apiClient.getCaptionText(
-                    self.courseId, self.userId, captionAsset['id'])
+                    courseId=self.courseId, userId=self.userId,
+                    captionId=captionAsset['id'])
                 captions = pysrt.from_string(captionSource)
 
                 index = 0

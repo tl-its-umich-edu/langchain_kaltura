@@ -4,3 +4,4 @@ lxml==5.3.0
 pysrt==1.1.2
 requests==2.32.3
 tenacity==8.5.0
+KalturaApiClient==21.16.0
