@@ -16,6 +16,19 @@ class KalturaAPI(AbstractMediaPlatformAPI):
     """
     Support use of Kaltura API via an existing session token.
 
+    This is not a full implementation of the Kaltura API, but rather
+    a simplified interface that allows access to media and captions
+    associated with a course in the University of Michigan's MiVideo
+    service, which is based on Kaltura.
+
+    Specifically, the limitations of this API are…
+
+    * `getMediaList()` only returns media associated with a
+        course, identified by the course ID from Canvas formatted in a
+        category string.  It gets only the media available in the course's
+        Media Gallery, not those embedded in Canvas Pages or Assignments.
+        This is to emulate the behavior of the MiVideo API.
+
     Attributes:
         client (KalturaClient): Instance of Kaltura API client.
     """
@@ -72,6 +85,13 @@ class KalturaAPI(AbstractMediaPlatformAPI):
         """
         Retrieves the list of media for a course.
 
+        Only returns media associated with a course, identified by the course
+        ID from Canvas formatted in a category string.  It gets only the media
+        available in the course's Media Gallery, not those embedded in Canvas
+        Pages or Assignments.
+
+        This is to emulate the behavior of the MiVideo API.
+
         Args:
             courseId (str): The course ID.
 
@@ -87,8 +107,10 @@ class KalturaAPI(AbstractMediaPlatformAPI):
             categoryFullName)
 
         mediaEntries = self.client.media.list(mediaFilter)
-        return [{'id': mediaEntry.id, 'name': mediaEntry.name} for mediaEntry
-                in mediaEntries.objects]
+        return [{
+            'id': mediaEntry.id,
+            'name': mediaEntry.name
+        } for mediaEntry in mediaEntries.objects]
 
     def getCaptionList(self, mediaId: str, courseId=NotImplemented,
                        userId=NotImplemented) -> List[Dict[str, Any]]:
@@ -96,8 +118,6 @@ class KalturaAPI(AbstractMediaPlatformAPI):
         Retrieves the list of captions for a media item.
 
         Args:
-            courseId (str): The course ID.
-            userId (str): The user ID.
             mediaId (str): The media ID.
 
         Returns:
@@ -107,10 +127,11 @@ class KalturaAPI(AbstractMediaPlatformAPI):
         captionFilter = KalturaCaptionAssetFilter()
         captionFilter.entryIdEqual = mediaId
         captionAssets = self.client.caption.captionAsset.list(captionFilter)
-        return [{'id': captionAsset.id, 'label': captionAsset.label,
-                 'languageCode': captionAsset.languageCode.value,
-                 'format': captionAsset.format.value} for captionAsset in
-                captionAssets.objects]
+        return [{
+            'id': captionAsset.id,
+            'languageCode': captionAsset.languageCode.getValue(),
+            'format': captionAsset.format.getValue()
+        } for captionAsset in captionAssets.objects]
 
     def getCaptionText(self, captionId: str, courseId=NotImplemented,
                        userId=NotImplemented) -> str:
@@ -118,8 +139,6 @@ class KalturaAPI(AbstractMediaPlatformAPI):
         Retrieves the text of a caption.
 
         Args:
-            courseId (str): The course ID.
-            userId (str): The user ID.
             captionId (str): The caption ID.
 
         Returns:
